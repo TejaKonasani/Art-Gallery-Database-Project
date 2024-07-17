@@ -1,0 +1,240 @@
+CREATE DATABASE ArtGalleryManagement;
+USE ArtGalleryManagement;
+
+
+-- Table for storing artist information --
+
+CREATE TABLE Artists (
+    ArtistID INTEGER PRIMARY KEY AUTOINCREMENT,
+    FirstName TEXT NOT NULL,
+    LastName TEXT NOT NULL,
+    BirthDate DATE,
+    Nationality TEXT,
+    Biography TEXT
+);
+
+
+-- Table for storing artwork information --
+
+CREATE TABLE Artworks (
+    ArtworkID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Title TEXT NOT NULL,
+    ArtistID INTEGER,
+    YearCreated INTEGER,
+    Medium TEXT,
+    Dimensions TEXT,
+    Price REAL,
+    Status TEXT,
+    FOREIGN KEY (ArtistID) REFERENCES Artists(ArtistID)
+);
+
+
+-- Table for storing exhibition information --
+
+CREATE TABLE Exhibitions (
+    ExhibitionID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name TEXT NOT NULL,
+    StartDate DATE NOT NULL,
+    EndDate DATE,
+    Description TEXT
+);
+
+
+-- Table for associating artworks with exhibitions --
+
+CREATE TABLE ExhibitionArtworks (
+    ExhibitionID INTEGER,
+    ArtworkID INTEGER,
+    PRIMARY KEY (ExhibitionID, ArtworkID),
+    FOREIGN KEY (ExhibitionID) REFERENCES Exhibitions(ExhibitionID),
+    FOREIGN KEY (ArtworkID) REFERENCES Artworks(ArtworkID)
+);
+
+
+-- Table for storing customer information --
+
+CREATE TABLE Customers (
+    CustomerID INTEGER PRIMARY KEY AUTOINCREMENT,
+    FirstName TEXT NOT NULL,
+    LastName TEXT NOT NULL,
+    Email TEXT,
+    Phone TEXT,
+    Address TEXT
+);
+
+
+-- Table for storing sales information --
+
+CREATE TABLE Sales (
+    SaleID INTEGER PRIMARY KEY AUTOINCREMENT,
+    CustomerID INTEGER,
+    ArtworkID INTEGER,
+    SaleDate DATE NOT NULL,
+    SalePrice REAL,
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
+    FOREIGN KEY (ArtworkID) REFERENCES Artworks(ArtworkID)
+);
+
+
+-- Table for storing employee information --
+
+CREATE TABLE Employees (
+    EmployeeID INTEGER PRIMARY KEY AUTOINCREMENT,
+    FirstName TEXT NOT NULL,
+    LastName TEXT NOT NULL,
+    Position TEXT,
+    HireDate DATE,
+    Salary REAL
+);
+
+
+-- Table for storing supplier information --
+
+CREATE TABLE Suppliers (
+    SupplierID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name TEXT NOT NULL,
+    ContactName TEXT,
+    ContactEmail TEXT,
+    ContactPhone TEXT,
+    Address TEXT
+);
+
+
+-- Table for storing supply orders --
+
+CREATE TABLE SupplyOrders (
+    SupplyOrderID INTEGER PRIMARY KEY AUTOINCREMENT,
+    SupplierID INTEGER,
+    OrderDate DATE NOT NULL,
+    TotalAmount REAL,
+    FOREIGN KEY (SupplierID) REFERENCES Suppliers(SupplierID)
+);
+
+
+-- Table for storing items in supply orders --
+
+CREATE TABLE SupplyOrderItems (
+    SupplyOrderItemID INTEGER PRIMARY KEY AUTOINCREMENT,
+    SupplyOrderID INTEGER,
+    ItemName TEXT NOT NULL,
+    Quantity INTEGER NOT NULL,
+    Price REAL NOT NULL,
+    FOREIGN KEY (SupplyOrderID) REFERENCES SupplyOrders(SupplyOrderID)
+);
+
+
+-- Table for storing gallery room information --
+
+CREATE TABLE GalleryRooms (
+    RoomID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name TEXT NOT NULL,
+    Description TEXT
+);
+
+
+-- Table for associating artworks with gallery rooms --
+
+CREATE TABLE RoomArtworks (
+    RoomID INTEGER,
+    ArtworkID INTEGER,
+    PRIMARY KEY (RoomID, ArtworkID),
+    FOREIGN KEY (RoomID) REFERENCES GalleryRooms(RoomID),
+    FOREIGN KEY (ArtworkID) REFERENCES Artworks(ArtworkID)
+);
+
+
+-- Table for storing events information --
+
+CREATE TABLE Events (
+    EventID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name TEXT NOT NULL,
+    EventDate DATE NOT NULL,
+    Description TEXT
+);
+
+
+-- Table for storing event attendees --
+
+CREATE TABLE EventAttendees (
+    EventID INTEGER,
+    CustomerID INTEGER,
+    PRIMARY KEY (EventID, CustomerID),
+    FOREIGN KEY (EventID) REFERENCES Events(EventID),
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+
+-- Table for storing membership information --
+
+CREATE TABLE Memberships (
+    MembershipID INTEGER PRIMARY KEY AUTOINCREMENT,
+    CustomerID INTEGER,
+    MembershipType TEXT,
+    StartDate DATE NOT NULL,
+    EndDate DATE,
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+
+-- Table for storing reviews --
+
+CREATE TABLE Reviews (
+    ReviewID INTEGER PRIMARY KEY AUTOINCREMENT,
+    ArtworkID INTEGER,
+    CustomerID INTEGER,
+    Rating INTEGER NOT NULL,
+    Comment TEXT,
+    ReviewDate DATE NOT NULL,
+    FOREIGN KEY (ArtworkID) REFERENCES Artworks(ArtworkID),
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+
+-- Table for storing donations --
+
+CREATE TABLE Donations (
+    DonationID INTEGER PRIMARY KEY AUTOINCREMENT,
+    DonorName TEXT NOT NULL,
+    DonationDate DATE NOT NULL,
+    Amount REAL,
+    Purpose TEXT
+);
+
+
+-- Table for storing volunteer information --
+
+CREATE TABLE Volunteers (
+    VolunteerID INTEGER PRIMARY KEY AUTOINCREMENT,
+    FirstName TEXT NOT NULL,
+    LastName TEXT NOT NULL,
+    Email TEXT,
+    Phone TEXT,
+    Address TEXT,
+    Availability TEXT
+);
+
+
+-- Table for storing maintenance records --
+
+CREATE TABLE MaintenanceRecords (
+    MaintenanceID INTEGER PRIMARY KEY AUTOINCREMENT,
+    RoomID INTEGER,
+    MaintenanceDate DATE NOT NULL,
+    Description TEXT,
+    Cost REAL,
+    FOREIGN KEY (RoomID) REFERENCES GalleryRooms(RoomID)
+);
+
+
+-- Table for storing insurance information --
+
+CREATE TABLE Insurances (
+    InsuranceID INTEGER PRIMARY KEY AUTOINCREMENT,
+    ArtworkID INTEGER,
+    InsuranceCompany TEXT NOT NULL,
+    PolicyNumber TEXT,
+    StartDate DATE NOT NULL,
+    EndDate DATE,
+    CoverageAmount REAL,
+    FOREIGN KEY (ArtworkID) REFERENCES Artworks(ArtworkID)
+);
